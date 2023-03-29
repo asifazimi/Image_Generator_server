@@ -15,6 +15,10 @@ const app = express();
 app.use(cors());
 app.use(express.json({ limit: "100mb" }));
 
+// creating API endpoints that we can connect from our fronte
+app.use("/api/v1/post", postRoutes);
+app.use("/api/v1/dalle", dalleRoutes);
+
 // to ensure server is working
 app.get("/", async (req, res) => {
   res.send("Hello from DALLE-2");
@@ -24,8 +28,8 @@ app.get("/", async (req, res) => {
 const startServer = async () => {
   try {
     connectDB(process.env.MONGODB_URL);
-    app.listen(8080, () =>
-      console.log("Server has started on port http://localhost:8080")
+    app.listen(8081, () =>
+      console.log("Server has started on port http://localhost:8081")
     );
   } catch (error) {
     console.log(error);
