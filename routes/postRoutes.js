@@ -8,20 +8,23 @@ dotenv.config();
 
 const router = express.Router();
 
+// Configuration
 cloudinary.config({
   cloud_name: process.env.CLOUNDINARY_CLOUD_NAME,
-  cloud_key: process.env.CLOUNDINARY_CLOUD_KEY,
-  cloud_secret: process.env.CLOUNDINARY_CLOUD_SECRET,
+  api_key: process.env.CLOUNDINARY_CLOUD_KEY,
+  api_secret: process.env.CLOUNDINARY_CLOUD_SECRET,
 });
 
 // GET ALL POST
 router.route("/").get(async (req, res) => {
   try {
     const posts = await Post.find({});
-
     res.status(200).json({ success: true, data: posts });
   } catch (error) {
-    res.status(500).json({ success: false, message: error });
+    res.status(500).json({
+      success: false,
+      message: "Fetching posts failed, please try again",
+    });
   }
 });
 
@@ -34,13 +37,16 @@ router.route("/").post(async (req, res) => {
     //   Create a post in the database
     const newPost = await Post.create({
       name,
-      photo: photoUrl,
       prompt,
+      photo: photoUrl.url,
     });
 
-    res.status(201).json({ success: true, data: newPost });
-  } catch (error) {
-    res.status(500).json({ success: false, message: error });
+    res.status(200).json({ success: true, data: newPost });
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      message: "Unable to create a post, please try again",
+    });
   }
 });
 
